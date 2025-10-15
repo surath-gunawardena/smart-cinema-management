@@ -1,41 +1,116 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${pageTitle} ?: 'Admin | CinemaHub'">Admin | CinemaHub</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${pageTitle} ?: 'Admin | Smart Cinema'">Admin | Smart Cinema</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" href="data:,">
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
 </head>
-<body class="bg-slate-50 text-slate-900">
-<!-- Shell fragment that other pages can inject content into -->
-<div th:fragment="shell(content)">
-    <!-- Top navbar -->
-    <header class="sticky top-0 z-40 bg-white border-b border-slate-200">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="/admin" class="flex items-center gap-2 font-semibold">
-                <!-- logo -->
-                <svg class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="currentColor"><path d="M4 5a2 2 0 0 1 2-2h4v6H4V5zm6 6H4v6a2 2 0 0 0 2 2h4v-8zm2-8h6a2 2 0 0 1 2 2v4h-8V3zm8 8h-8v8h6a2 2 0 0 0 2-2v-6z"/></svg>
-                <span class="tracking-tight">Smart Cinema</span>
+<body class="bg-slate-900 text-slate-100">
+<div th:fragment="shell(content)" class="min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header class="sticky top-0 z-50 bg-slate-900/90 border-b border-slate-800 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex items-center justify-between h-16 px-4">
+
+            <!-- Brand -->
+            <a href="/admin/dashboard" class="flex items-center gap-2 font-semibold text-white">
+                <svg class="w-6 h-6 text-blue-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M4 5a2 2 0 0 1 2-2h4v6H4V5zm6 6H4v6a2 2 0 0 0 2 2h4v-8zm2-8h6a2 2 0 0 1 2 2v4h-8V3zm8 8h-8v8h6a2 2 0 0 0 2-2v-6z"/>
+                </svg>
+                Smart Cinema
             </a>
-            <div class="flex items-center gap-6">
-                <div class="hidden sm:flex items-center gap-2 text-sm text-slate-600">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    <span th:text="${adminName} ?: 'Admin User'">Admin User</span>
-                    <span class="px-2 py-0.5 text-xs rounded-full bg-slate-100 border border-slate-200">admin</span>
-                </div>
-                <a href="/perform_logout" class="text-sm font-medium text-slate-700 hover:text-slate-900">Logout</a>
+
+            <!-- Nav links -->
+            <nav class="hidden md:flex gap-4 text-sm">
+                <a href="/admin/dashboard"
+                   class="px-3 py-2 rounded-md font-medium transition"
+                   th:classappend="${#strings.contains(path, '/admin/dashboard')} ?
+             'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'">
+                    Dashboard
+                </a>
+
+                <a href="/admin/movies"
+                   class="px-3 py-2 rounded-md font-medium transition"
+                   th:classappend="${#strings.contains(path, '/admin/movies')} ?
+             'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'">
+                    Movies
+                </a>
+
+                <a href="/admin/users"
+                   class="px-3 py-2 rounded-md font-medium transition"
+                   th:classappend="${#strings.contains(path, '/admin/users')} ?
+             'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'">
+                    Users
+                </a>
+
+                <a href="/admin/showtimes"
+                   class="px-3 py-2 rounded-md font-medium transition"
+                   th:classappend="${#strings.contains(path, '/admin/showtimes')} ?
+             'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'">
+                    Showtimes
+                </a>
+
+                <a href="/admin/pricing"
+                   class="px-3 py-2 rounded-md font-medium transition"
+                   th:classappend="${#strings.contains(path, '/admin/pricing')} ?
+             'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'">
+                    Pricing
+                </a>
+
+                <a href="/admin/reports"
+                   class="px-3 py-2 rounded-md font-medium transition"
+                   th:classappend="${#strings.contains(path, '/admin/reports')} ?
+             'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'">
+                    Reports
+                </a>
+            </nav>
+
+            <!-- User info -->
+            <div class="flex items-center gap-4">
+                <span class="hidden sm:inline text-sm text-slate-400" th:text="${adminName} ?: 'Admin User'">Admin User</span>
+                <a href="/perform_logout"
+                   class="text-sm text-slate-400 hover:text-white border border-slate-700 rounded-lg px-3 py-1">
+                    Logout
+                </a>
             </div>
         </div>
     </header>
 
+    <!-- Alert banners (flash or query params) -->
+    <div class="max-w-7xl w-full mx-auto px-4 mt-4 space-y-2">
+        <div th:if="${success} or ${param.success}"
+             class="border border-emerald-700/50 bg-emerald-900/40 text-emerald-300 px-4 py-2 rounded-lg"
+             th:text="${success} ?: ${param.success}">Success</div>
+
+        <div th:if="${info} or ${param.info}"
+             class="border border-blue-700/50 bg-blue-900/40 text-blue-300 px-4 py-2 rounded-lg"
+             th:text="${info} ?: ${param.info}">Info</div>
+
+        <div th:if="${warn} or ${param.warn}"
+             class="border border-amber-700/50 bg-amber-900/40 text-amber-200 px-4 py-2 rounded-lg"
+             th:text="${warn} ?: ${param.warn}">Warning</div>
+
+        <div th:if="${error} or ${param.error}"
+             class="border border-rose-700/50 bg-rose-900/40 text-rose-300 px-4 py-2 rounded-lg"
+             th:text="${error} ?: ${param.error}">Error</div>
+
+        <div th:if="${param.logout}"
+             class="border border-blue-700/50 bg-blue-900/40 text-blue-300 px-4 py-2 rounded-lg">
+            You have been logged out.
+        </div>
+    </div>
+
     <!-- Page container -->
-    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <main class="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
         <section th:insert="${content}">Content</section>
     </main>
 
-    <footer class="border-t border-slate-200 py-6 text-center text-xs text-slate-500">
-        © <span th:text="${#dates.format(#dates.createNow(),'yyyy')}">2025</span> CinemaHub
+    <footer class="border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+        © <span th:text="${#dates.format(#dates.createNow(),'yyyy')}">2025</span> Smart Cinema
     </footer>
 </div>
 </body>

@@ -2,60 +2,35 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
+    <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" href="data:,">
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
 </head>
 <body>
-<!-- Use the layout and pass our page content as a fragment -->
 <div th:replace="~{admin/layout :: shell(~{::section})}">
-    <!-- ====== Dashboard Content ====== -->
     <section>
-        <h1 class="text-3xl font-bold tracking-tight mb-6">Admin Dashboard</h1>
-        <!-- Section tabs (Movies, Users, Screens, Schedules, Pricing, Reports) -->
-        <div class="flex items-center gap-2 overflow-x-auto rounded-xl bg-white border border-slate-200 px-2 py-1 mb-6">
-            <a href="/admin/movies" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Movies</a>
-            <a href="/admin/users" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Users</a>
-            <a href="/admin/screens" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Screens</a>
-            <a href="/admin/showtimes" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Schedules</a>
-            <a href="/admin/pricing" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Pricing</a>
-            <a href="/admin/reports" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Reports</a>
-        </div>
-        <!-- KPI cards -->
+        <h1 class="text-3xl font-bold mb-6 text-white">Dashboard</h1>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <!-- Active Movies -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-4">
-                <div class="text-sm text-slate-500">Active Movies</div>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <div class="text-3xl font-semibold" th:text="${activeMovies}">4</div>
-                </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                <div class="text-sm text-slate-400">Active Movies</div>
+                <div class="text-3xl font-semibold" th:text="${activeMovies}">4</div>
             </div>
-            <!-- Total Users -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-4">
-                <div class="text-sm text-slate-500">Total Users</div>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <div class="text-3xl font-semibold" th:text="${totalUsers}">1</div>
-                </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                <div class="text-sm text-slate-400">Total Users</div>
+                <div class="text-3xl font-semibold" th:text="${totalUsers}">1</div>
             </div>
-            <!-- Schedules -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-4">
-                <div class="text-sm text-slate-500">Schedules</div>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <div class="text-3xl font-semibold" th:text="${schedules}">3</div>
-                </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                <div class="text-sm text-slate-400">Schedules</div>
+                <div class="text-3xl font-semibold" th:text="${schedules}">3</div>
             </div>
-            <!-- Revenue -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-4">
-                <div class="text-sm text-slate-500">Total Revenue</div>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <div class="text-3xl font-semibold">$<span th:text="${#numbers.formatDecimal(totalRevenue,1,'COMMA',2,'POINT')}">139.92</span></div>
-                </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                <div class="text-sm text-slate-400">Total Revenue</div>
+                <div class="text-3xl font-semibold">$<span th:text="${#numbers.formatDecimal(totalRevenue,1,'COMMA',2,'POINT')}">139.92</span></div>
             </div>
         </div>
-
-
-
-
     </section>
 </div>
 </body>

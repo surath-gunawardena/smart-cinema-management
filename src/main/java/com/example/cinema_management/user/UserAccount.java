@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*; // for defensive validation on setters if you want
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class UserAccount {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long user_id;
