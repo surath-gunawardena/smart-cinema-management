@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="data:,">
+</head>
+<body>
+<!-- Use the layout and pass our page content as a fragment -->
+<div th:replace="~{admin/layout :: shell(~{::section})}">
+    <!-- ====== Dashboard Content ====== -->
+    <section>
+        <h1 class="text-3xl font-bold tracking-tight mb-6">Admin Dashboard</h1>
+
+        <!-- KPI cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <!-- Active Movies -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4">
+                <div class="text-sm text-slate-500">Active Movies</div>
+                <div class="mt-2 flex items-baseline gap-2">
+                    <div class="text-3xl font-semibold" th:text="${activeMovies}">4</div>
+                </div>
+            </div>
+            <!-- Total Users -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4">
+                <div class="text-sm text-slate-500">Total Users</div>
+                <div class="mt-2 flex items-baseline gap-2">
+                    <div class="text-3xl font-semibold" th:text="${totalUsers}">1</div>
+                </div>
+            </div>
+            <!-- Schedules -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4">
+                <div class="text-sm text-slate-500">Schedules</div>
+                <div class="mt-2 flex items-baseline gap-2">
+                    <div class="text-3xl font-semibold" th:text="${schedules}">3</div>
+                </div>
+            </div>
+            <!-- Revenue -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4">
+                <div class="text-sm text-slate-500">Total Revenue</div>
+                <div class="mt-2 flex items-baseline gap-2">
+                    <div class="text-3xl font-semibold">$<span th:text="${#numbers.formatDecimal(totalRevenue,1,'COMMA',2,'POINT')}">139.92</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section tabs (Movies, Users, Screens, Schedules, Pricing, Reports) -->
+        <div class="flex items-center gap-2 overflow-x-auto rounded-xl bg-white border border-slate-200 px-2 py-1 mb-6">
+            <a href="/admin/movies" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Movies</a>
+            <a href="/admin/users" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Users</a>
+            <a href="/admin/screens" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Screens</a>
+            <a href="/admin/showtimes" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Schedules</a>
+            <a href="/admin/pricing" class="px-4 py-2 rounded-lg text-sm font-medium bg-slate-900 text-white">Pricing</a>
+            <a href="/admin/reports" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Reports</a>
+            <div class="ml-auto">
+                <a href="/admin/pricing/new" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-900 text-white text-sm">
+                    <span>+ Add Pricing Rate</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Pricing Management block (like your screenshot) -->
+        <div class="mb-6">
+            <h2 class="text-2xl font-semibold">Pricing Management</h2>
+            <p class="text-slate-500 mb-4">Manage ticket pricing rates and types</p>
+
+            <!-- Standard Rate -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 mb-4">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <h3 class="text-lg font-semibold">Standard Rate</h3>
+                        <span class="px-2 py-0.5 text-xs rounded-full bg-slate-900 text-white">Active</span>
+                        <span class="text-xs text-slate-500">Created: <span>11/09/2025</span></span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="px-3 py-1.5 text-sm rounded-lg border border-slate-200 hover:bg-slate-50">Deactivate</button>
+                        <a href="#" class="px-3 py-1.5 text-sm rounded-lg border border-slate-200 hover:bg-slate-50">Edit</a>
+                        <button class="px-3 py-1.5 text-sm rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50">Delete</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <div class="rounded-xl border border-slate-200 p-4">
+                        <div class="text-slate-500 text-sm">Adult</div>
+                        <div class="text-xl font-semibold text-blue-600">$10</div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-4">
+                        <div class="text-slate-500 text-sm">Child</div>
+                        <div class="text-xl font-semibold text-blue-600">$5</div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-4">
+                        <div class="text-slate-500 text-sm">Senior</div>
+                        <div class="text-xl font-semibold text-blue-600">$8</div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-4">
+                        <div class="text-slate-500 text-sm">Student</div>
+                        <div class="text-xl font-semibold text-blue-600">$7</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premium Rate -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <h3 class="text-lg font-semibold">Premium Rate</h3>
+                        <span class="px-2 py-0.5 text-xs rounded-full bg-slate-900 text-white">Active</span>
+                        <span class="text-xs text-slate-500">Created: <span>11/09/2025</span></span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="px-3 py-1.5 text-sm rounded-lg border border-slate-200 hover:bg-slate-50">Deactivate</button>
+                        <a href="#" class="px-3 py-1.5 text-sm rounded-lg border border-slate-200 hover:bg-slate-50">Edit</a>
+                        <button class="px-3 py-1.5 text-sm rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50">Delete</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <div class="rounded-xl border border-slate-200 p-4">
+                        <div class="text-slate-500 text-sm">Adult</div>
+                        <div class="text-xl font-semibold text-blue-600">$15</div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-4">
+                        <div class="text-slate-500 text-sm">Child</div>
+                        <div class="text-xl font-semibold text-blue-600">$8</div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-4">
+                        <div class="text-slate-500 text-sm">Senior</div>
+                        <div class="text-xl font-semibold text-blue-600">$12</div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-4">
+                        <div class="text-slate-500 text-sm">Student</div>
+                        <div class="text-xl font-semibold text-blue-600">$10</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="/admin/movies" class="block bg-white border border-slate-200 rounded-2xl p-5 hover:bg-slate-50">
+                <div class="font-semibold mb-1">Manage Movies</div>
+                <div class="text-sm text-slate-500">Add, edit, and archive movies</div>
+            </a>
+            <a href="/admin/showtimes" class="block bg-white border border-slate-200 rounded-2xl p-5 hover:bg-slate-50">
+                <div class="font-semibold mb-1">Manage Schedules</div>
+                <div class="text-sm text-slate-500">Create and adjust showtimes</div>
+            </a>
+            <a href="/admin/reports" class="block bg-white border border-slate-200 rounded-2xl p-5 hover:bg-slate-50">
+                <div class="font-semibold mb-1">View Reports</div>
+                <div class="text-sm text-slate-500">Revenue and occupancy analytics</div>
+            </a>
+        </div>
+    </section>
+</div>
+</body>
+</html>

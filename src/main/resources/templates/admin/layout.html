@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} ?: 'Admin | CinemaHub'">Admin | CinemaHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="data:,">
+</head>
+<body class="bg-slate-50 text-slate-900">
+<!-- Shell fragment that other pages can inject content into -->
+<div th:fragment="shell(content)">
+    <!-- Top navbar -->
+    <header class="sticky top-0 z-40 bg-white border-b border-slate-200">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="/admin" class="flex items-center gap-2 font-semibold">
+                <!-- logo -->
+                <svg class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="currentColor"><path d="M4 5a2 2 0 0 1 2-2h4v6H4V5zm6 6H4v6a2 2 0 0 0 2 2h4v-8zm2-8h6a2 2 0 0 1 2 2v4h-8V3zm8 8h-8v8h6a2 2 0 0 0 2-2v-6z"/></svg>
+                <span class="tracking-tight">CinemaHub</span>
+            </a>
+            <div class="flex items-center gap-6">
+                <div class="hidden sm:flex items-center gap-2 text-sm text-slate-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span th:text="${adminName} ?: 'Admin User'">Admin User</span>
+                    <span class="px-2 py-0.5 text-xs rounded-full bg-slate-100 border border-slate-200">admin</span>
+                </div>
+                <a href="/perform_logout" class="text-sm font-medium text-slate-700 hover:text-slate-900">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page container -->
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+        <section th:insert="${content}">Content</section>
+    </main>
+
+    <footer class="border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+        © <span th:text="${#dates.format(#dates.createNow(),'yyyy')}">2025</span> CinemaHub
+    </footer>
+</div>
+</body>
+</html>
