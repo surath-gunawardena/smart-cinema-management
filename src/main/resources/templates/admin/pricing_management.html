@@ -11,54 +11,16 @@
 <div th:replace="~{admin/layout :: shell(~{::section})}">
     <!-- ====== Dashboard Content ====== -->
     <section>
-        <h1 class="text-3xl font-bold tracking-tight mb-6">Admin Dashboard</h1>
-
-        <!-- KPI cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <!-- Active Movies -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-4">
-                <div class="text-sm text-slate-500">Active Movies</div>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <div class="text-3xl font-semibold" th:text="${activeMovies}">4</div>
-                </div>
-            </div>
-            <!-- Total Users -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-4">
-                <div class="text-sm text-slate-500">Total Users</div>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <div class="text-3xl font-semibold" th:text="${totalUsers}">1</div>
-                </div>
-            </div>
-            <!-- Schedules -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-4">
-                <div class="text-sm text-slate-500">Schedules</div>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <div class="text-3xl font-semibold" th:text="${schedules}">3</div>
-                </div>
-            </div>
-            <!-- Revenue -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-4">
-                <div class="text-sm text-slate-500">Total Revenue</div>
-                <div class="mt-2 flex items-baseline gap-2">
-                    <div class="text-3xl font-semibold">$<span th:text="${#numbers.formatDecimal(totalRevenue,1,'COMMA',2,'POINT')}">139.92</span></div>
-                </div>
-            </div>
-        </div>
+        <h1 class="text-3xl font-bold tracking-tight mb-6">Pricing Management</h1>
 
         <!-- Section tabs (Movies, Users, Screens, Schedules, Pricing, Reports) -->
-        <div class="flex items-center gap-2 overflow-x-auto rounded-xl bg-white border border-slate-200 px-2 py-1 mb-6">
-            <a href="/admin/movies" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Movies</a>
-            <a href="/admin/users" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Users</a>
-            <a href="/admin/screens" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Screens</a>
-            <a href="/admin/showtimes" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Schedules</a>
-            <a href="/admin/pricing" class="px-4 py-2 rounded-lg text-sm font-medium bg-slate-900 text-white">Pricing</a>
-            <a href="/admin/reports" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Reports</a>
+<!--        <div class="flex items-center gap-2 overflow-x-auto rounded-xl bg-white border border-slate-200 px-2 py-1 mb-6">-->
             <div class="ml-auto">
                 <a href="/admin/pricing/new" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-900 text-white text-sm">
                     <span>+ Add Pricing Rate</span>
                 </a>
             </div>
-        </div>
+<!--        </div>-->
 
         <!-- Pricing Management block (like your screenshot) -->
         <div class="mb-6">
@@ -88,14 +50,6 @@
                         <div class="text-slate-500 text-sm">Child</div>
                         <div class="text-xl font-semibold text-blue-600">$5</div>
                     </div>
-                    <div class="rounded-xl border border-slate-200 p-4">
-                        <div class="text-slate-500 text-sm">Senior</div>
-                        <div class="text-xl font-semibold text-blue-600">$8</div>
-                    </div>
-                    <div class="rounded-xl border border-slate-200 p-4">
-                        <div class="text-slate-500 text-sm">Student</div>
-                        <div class="text-xl font-semibold text-blue-600">$7</div>
-                    </div>
                 </div>
             </div>
 
@@ -122,32 +76,9 @@
                         <div class="text-slate-500 text-sm">Child</div>
                         <div class="text-xl font-semibold text-blue-600">$8</div>
                     </div>
-                    <div class="rounded-xl border border-slate-200 p-4">
-                        <div class="text-slate-500 text-sm">Senior</div>
-                        <div class="text-xl font-semibold text-blue-600">$12</div>
-                    </div>
-                    <div class="rounded-xl border border-slate-200 p-4">
-                        <div class="text-slate-500 text-sm">Student</div>
-                        <div class="text-xl font-semibold text-blue-600">$10</div>
-                    </div>
+
                 </div>
             </div>
-        </div>
-
-        <!-- Quick actions -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="/admin/movies" class="block bg-white border border-slate-200 rounded-2xl p-5 hover:bg-slate-50">
-                <div class="font-semibold mb-1">Manage Movies</div>
-                <div class="text-sm text-slate-500">Add, edit, and archive movies</div>
-            </a>
-            <a href="/admin/showtimes" class="block bg-white border border-slate-200 rounded-2xl p-5 hover:bg-slate-50">
-                <div class="font-semibold mb-1">Manage Schedules</div>
-                <div class="text-sm text-slate-500">Create and adjust showtimes</div>
-            </a>
-            <a href="/admin/reports" class="block bg-white border border-slate-200 rounded-2xl p-5 hover:bg-slate-50">
-                <div class="font-semibold mb-1">View Reports</div>
-                <div class="text-sm text-slate-500">Revenue and occupancy analytics</div>
-            </a>
         </div>
     </section>
 </div>
