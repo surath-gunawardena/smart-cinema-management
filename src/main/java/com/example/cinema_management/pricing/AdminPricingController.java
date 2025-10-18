@@ -1,11 +1,11 @@
 package com.example.cinema_management.pricing;
 
-import com.example.cinema_management.movie.MovieRepository;
-import com.example.cinema_management.pricing.dto.PricingBulkRequest;
-import com.example.cinema_management.pricing.dto.PricingShowtimeRequest;
-import com.example.cinema_management.showtime.ShowTimeRepository;
+import com.example.cinema_management.pricing.dto.PricingCreateRequest;
+import com.example.cinema_management.pricing.dto.PricingForm;
+import com.example.cinema_management.pricing.dto.PricingUpdateRequest;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,65 +13,129 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/pricing")
 public class AdminPricingController {
 
-    private final PricingService pricingService;
-    private final MovieRepository movieRepo;
-    private final ShowTimeRepository showTimeRepo;
+    private final PricingService service;
 
-    public AdminPricingController(PricingService svc, MovieRepository m, ShowTimeRepository s) {
-        this.pricingService = svc; this.movieRepo = m; this.showTimeRepo = s;
+    public AdminPricingController(PricingService service) {
+        this.service = service;
     }
 
-    @GetMapping()
-    public String index(Model model) {
-        return "admin/pricing_management";
-    }
-
-    @GetMapping("/list")
+    // List page (pagination)
+    @GetMapping
     public String list(@RequestParam(defaultValue = "0") int page,
                        @RequestParam(defaultValue = "10") int size,
-                       @RequestParam(required = false) Integer screenId,
-                       @RequestParam(required = false) SeatType seatType,
                        Model model) {
-        var pageable = org.springframework.data.domain.PageRequest.of(page, size);
-        // var pager = pricingService.pageAll(screenId, seatType, pageable);
+        Page<Pricing> pg = service.page(PageRequest.of(page, size));
         model.addAttribute("pageTitle", "Pricing");
-//        model.addAttribute("pager", pager);
-        model.addAttribute("screenId", screenId);
-        model.addAttribute("seatType", seatType);
-        model.addAttribute("page", page);
-        model.addAttribute("size", size);
-        return "admin/pricing-list"; // must match the file you just created
+        model.addAttribute("page", pg);
+        return "admin/pricing-list";
     }
 
-    @GetMapping("/showtime/{showTimeId}/json")
-    @ResponseBody
-    public Map<String, Object> pricesForShowtime(@PathVariable Long showTimeId) {
-        var map = new HashMap<String, Object>();
-        var zero = java.math.BigDecimal.ZERO;
-        var prices = new HashMap<String, BigDecimal>();
-        prices.put("ADULT", zero);
-        prices.put("CHILD", zero);
-        pricingService.listForShowtime(showTimeId).forEach(p -> prices.put(p.getSeatType().name(), p.getPrice()));
-        map.put("showTimeId", showTimeId);
-        map.put("prices", prices);
-        return map;
+    // Create form
+    @GetMapping("/new")
+    public String createForm(Model model) {
+        var form = new PricingForm();
+        form.setName("");
+        form.setAdultPrice(new BigDecimal("0.00"));
+        form.setChildPrice(new BigDecimal("0.00"));
+
+        model.addAttribute("pageTitle", "Create Pricing");
+        model.addAttribute("form", form);
+        model.addAttribute("mode", "create");
+
+        return "admin/pricing-form";
     }
 
-    @PostMapping("/showtime/{showTimeId}/save")
-    public String saveTwo(@PathVariable Long showTimeId,
-                          @RequestParam("adultPrice") BigDecimal adult,
-                          @RequestParam("childPrice") BigDecimal child,
-                          RedirectAttributes ra) {
-        pricingService.upsertTwoTypes(showTimeId, adult, child);
-        ra.addFlashAttribute("success", "Pricing saved for showtime " + showTimeId);
-        return "redirect:/admin/pricing/showtime/" + showTimeId;
+    // Create submit
+    @PostMapping
+    public String createSubmit(@Valid @ModelAttribute("form") PricingForm form,
+                               BindingResult binding,
+                               RedirectAttributes ra,
+                               Model model) {
+        if (binding.hasErrors()) {
+            model.addAttribute("pageTitle", "Create Pricing");
+            model.addAttribute("mode", "create");
+            return "admin/pricing-form";
+        }
+        var req = new PricingCreateRequest();
+        req.name = form.getName();
+        req.prices = new EnumMap<>(SeatType.class);
+        req.prices.put(SeatType.ADULT, form.getAdultPrice());
+        req.prices.put(SeatType.CHILD, form.getChildPrice());
+
+        try {
+            Long id = service.create(req);
+            ra.addFlashAttribute("success", "Pricing created.");
+            return "redirect:/admin/pricing/" + id + "/edit";
+        } catch (IllegalArgumentException ex) {
+            binding.rejectValue("name", "name.exists", ex.getMessage());
+            model.addAttribute("pageTitle", "Create Pricing");
+            model.addAttribute("mode", "create");
+            return "admin/pricing-form";
+        }
     }
 
+    // Edit form
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        var p = service.getOrThrow(id);
+        var types = service.listTypes(id);
+        Map<SeatType, BigDecimal> map = new EnumMap<>(SeatType.class);
+        types.forEach(t -> map.put(t.getType(), t.getPrice()));
+
+        var form = new PricingForm();
+        form.setId(p.getId());
+        form.setName(p.getName());
+        form.setAdultPrice(map.getOrDefault(SeatType.ADULT, new BigDecimal("0.00")));
+        form.setChildPrice(map.getOrDefault(SeatType.CHILD, new BigDecimal("0.00")));
+
+        model.addAttribute("pageTitle", "Edit Pricing");
+        model.addAttribute("form", form);
+        model.addAttribute("mode", "edit");
+        return "admin/pricing-form";
+    }
+
+    // Edit submit
+    @PostMapping("/{id}")
+    public String editSubmit(@PathVariable Long id,
+                             @Valid @ModelAttribute("form") PricingForm form,
+                             BindingResult binding,
+                             RedirectAttributes ra,
+                             Model model) {
+        if (binding.hasErrors()) {
+            model.addAttribute("pageTitle", "Edit Pricing");
+            model.addAttribute("mode", "edit");
+            return "admin/pricing-form";
+        }
+        var req = new PricingUpdateRequest();
+        req.name = form.getName();
+        req.prices = new EnumMap<>(SeatType.class);
+        req.prices.put(SeatType.ADULT, form.getAdultPrice());
+        req.prices.put(SeatType.CHILD, form.getChildPrice());
+
+        try {
+            service.update(id, req);
+            ra.addFlashAttribute("success", "Pricing updated.");
+            return "redirect:/admin/pricing";
+        } catch (IllegalArgumentException ex) {
+            binding.rejectValue("name", "name.exists", ex.getMessage());
+            model.addAttribute("pageTitle", "Edit Pricing");
+            model.addAttribute("mode", "edit");
+            return "admin/pricing-form";
+        }
+    }
+
+    // Delete
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes ra) {
+        service.delete(id);
+        ra.addFlashAttribute("info", "Pricing deleted.");
+        return "redirect:/admin/pricing";
+    }
 }

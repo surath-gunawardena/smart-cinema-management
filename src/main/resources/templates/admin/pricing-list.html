@@ -1,135 +1,68 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
     <title>Pricing</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { darkMode: 'class' }</script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
 </head>
-<body class="dark">
-<div th:replace="~{admin/layout :: shell(~{::section})}">
+<body>
+<div th:replace="admin/layout :: shell(~{::section})">
     <section>
-
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-3xl font-bold">Pricing</h1>
-            <a th:href="@{/admin/pricing/screen/1}"
-               class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg">
-                + Manage Screen 1
-            </a>
+            <h1 class="text-xl font-semibold">Pricing</h1>
+            <a href="/admin/pricing/new"
+               class="px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500">+ New Pricing</a>
         </div>
 
-        <!-- Filters -->
-        <form method="get" class="flex flex-wrap items-end gap-3 mb-4">
-            <div>
-                <label class="block text-sm text-slate-300 mb-1">Screen</label>
-                <input type="number" min="1" name="screenId" th:value="${screenId}"
-                       class="w-32 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100">
-            </div>
-            <div>
-                <label class="block text-sm text-slate-300 mb-1">Seat Type</label>
-                <select name="seatType" class="w-40 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100">
-                    <option th:value="" th:selected="${seatType} == null">All</option>
-                    <option th:each="t : ${T(com.example.cinema_management.pricing.SeatType).values()}"
-                            th:value="${t}" th:text="${t}"
-                            th:selected="${seatType} == ${t}"></option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm text-slate-300 mb-1">Page Size</label>
-                <select name="size" id="sizeSelect"
-                        class="w-32 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100">
-                    <option th:value="5"  th:selected="${size == 5}">5</option>
-                    <option th:value="10" th:selected="${size == 10}">10</option>
-                    <option th:value="20" th:selected="${size == 20}">20</option>
-                    <option th:value="50" th:selected="${size == 50}">50</option>
-                </select>
-            </div>
-            <div>
-                <button class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-4 py-2 rounded-lg">Apply</button>
-            </div>
-        </form>
+        <!-- messages -->
+        <div class="space-y-2 mb-4">
+            <div th:if="${success}" class="border border-emerald-700/50 bg-emerald-900/40 text-emerald-300 px-4 py-2 rounded-lg" th:text="${success}"></div>
+            <div th:if="${error}" class="border border-rose-700/50 bg-rose-900/40 text-rose-300 px-4 py-2 rounded-lg" th:text="${error}"></div>
+            <div th:if="${info}" class="border border-blue-700/50 bg-blue-900/40 text-blue-300 px-4 py-2 rounded-lg" th:text="${info}"></div>
+        </div>
 
-        <!-- Table -->
-        <div class="overflow-x-auto rounded-xl border border-slate-800">
+        <div class="overflow-hidden rounded-xl border border-slate-800">
             <table class="min-w-full text-sm">
-                <thead class="bg-slate-900/80 text-slate-300">
+                <thead class="bg-slate-800/60 text-slate-300">
                 <tr>
-                    <th class="text-left font-semibold px-4 py-3">#</th>
-                    <th class="text-left font-semibold px-4 py-3">Screen</th>
-                    <th class="text-left font-semibold px-4 py-3">Seat Type</th>
-                    <th class="text-left font-semibold px-4 py-3">Price</th>
-                    <th class="text-left font-semibold px-4 py-3">Created</th>
-                    <th class="text-left font-semibold px-4 py-3">Updated</th>
-                    <th class="text-left font-semibold px-4 py-3">Actions</th>
+                    <th class="px-4 py-3 text-left">ID</th>
+                    <th class="px-4 py-3 text-left">Name</th>
+                    <th class="px-4 py-3 text-left">Actions</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr th:each="row,iter : ${pager.content}" class="border-t border-slate-800 hover:bg-slate-800/40">
-                    <td class="px-4 py-3 text-slate-400" th:text="${iter.index + 1 + (pager.number * pager.size)}">1</td>
-                    <td class="px-4 py-3" th:text="${row.screenId}">1</td>
+                <tbody class="divide-y divide-slate-800">
+                <tr th:each="p : ${page.content}">
+                    <td class="px-4 py-3" th:text="${p.id}">1</td>
+                    <td class="px-4 py-3" th:text="${p.name}">Standard</td>
                     <td class="px-4 py-3">
-              <span class="px-2 py-0.5 rounded-full border border-slate-700 bg-slate-800/60"
-                    th:text="${row.seatType}">ADULT</span>
-                    </td>
-                    <td class="px-4 py-3 text-blue-400 font-semibold">$<span th:text="${#numbers.formatDecimal(row.price, 1,'COMMA',2,'POINT')}">10.00</span></td>
-                    <td class="px-4 py-3 text-slate-400" th:text="${#temporals.format(row.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01</td>
-                    <td class="px-4 py-3 text-slate-400" th:text="${row.updatedAt != null ? #temporals.format(row.updatedAt, 'yyyy-MM-dd HH:mm') : '-'}">-</td>
-                    <td class="px-4 py-3">
-                        <div class="flex gap-2">
-                            <a th:href="@{'/admin/pricing/screen/' + ${row.screenId}}"
-                               class="px-3 py-1.5 rounded-lg border border-blue-700 text-blue-300 hover:bg-blue-900/30">Edit Screen</a>
-                            <form th:action="@{'/admin/pricing/screen/' + ${row.screenId} + '/delete/' + ${row.seatType}}"
-                                  method="post"
-                                  onsubmit="return confirm('Delete this '+ '[[${row.seatType}]]' +' price for screen [[${row.screenId}]]?')">
-                                <button class="px-3 py-1.5 rounded-lg border border-rose-700 text-rose-300 hover:bg-rose-900/30">Delete</button>
-                            </form>
-                        </div>
+                        <a th:href="@{'/admin/pricing/' + ${p.id} + '/edit'}"
+                           class="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-800">Edit</a>
+                        <form th:action="@{'/admin/pricing/' + ${p.id} + '/delete'}" method="post" class="inline"
+                              onsubmit="return confirm('Delete this pricing?');">
+                            <button type="submit" class="px-3 py-1.5 rounded-lg border border-rose-700 text-rose-300 hover:bg-rose-900/30">
+                                Delete
+                            </button>
+                        </form>
                     </td>
                 </tr>
-
-                <tr th:if="${pager.empty}">
-                    <td colspan="7" class="px-4 py-6 text-center text-slate-400">No pricing rows found.</td>
+                <tr th:if="${page.content.isEmpty()}">
+                    <td colspan="3" class="px-4 py-6 text-center text-slate-400">No pricing yet.</td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- Pagination -->
-        <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
-            <div class="text-sm text-slate-400">
-                Page <span class="font-semibold" th:text="${pager.number + 1}">1</span>
-                of <span class="font-semibold" th:text="${pager.totalPages}">1</span>
-                · <span th:text="${pager.totalElements}">0</span> items
-            </div>
-
-            <div class="flex items-center gap-1">
-                <a th:href="@{|/admin/pricing?page=${pager.number-1 < 0 ? 0 : pager.number-1}&size=${pager.size}&screenId=${screenId}&seatType=${seatType}|}"
-                   class="px-3 py-2 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800"
-                   th:classappend="${pager.first} ? 'pointer-events-none opacity-40'">Prev</a>
-
-                <a th:each="p : ${#numbers.sequence(0, pager.totalPages-1)}"
-                   th:href="@{|/admin/pricing?page=${p}&size=${pager.size}&screenId=${screenId}&seatType=${seatType}|}"
-                   th:text="${p+1}"
-                   class="px-3 py-2 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800"
-                   th:classappend="${p}==${pager.number} ? 'bg-blue-600 text-white border-blue-600'"></a>
-
-                <a th:href="@{|/admin/pricing?page=${pager.number+1 >= pager.totalPages ? pager.totalPages-1 : pager.number+1}&size=${pager.size}&screenId=${screenId}&seatType=${seatType}|}"
-                   class="px-3 py-2 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800"
-                   th:classappend="${pager.last} ? 'pointer-events-none opacity-40'">Next</a>
-            </div>
+        <!-- pager -->
+        <div class="mt-4 flex items-center gap-2">
+            <a th:if="${!page.first}" th:href="@{/admin/pricing(page=${page.number - 1}, size=${page.size})}"
+               class="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-800">Prev</a>
+            <span class="text-slate-400">Page <span th:text="${page.number + 1}">1</span> / <span th:text="${page.totalPages}">1</span></span>
+            <a th:if="${!page.last}" th:href="@{/admin/pricing(page=${page.number + 1}, size=${page.size})}"
+               class="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-800">Next</a>
         </div>
-
-        <script>
-            // when page size changes, restart at page 0
-            const sizeSelect = document.getElementById('sizeSelect');
-            sizeSelect?.addEventListener('change', () => {
-              const params = new URLSearchParams(window.location.search);
-              params.set('size', sizeSelect.value);
-              params.set('page', '0');
-              window.location.search = params.toString();
-            });
-        </script>
-
     </section>
 </div>
 </body>

@@ -1,96 +1,23 @@
 package com.example.cinema_management.pricing;
 
 import jakarta.persistence.*;
-import lombok.*;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(
-        name = "pricing",
-        uniqueConstraints = @UniqueConstraint(name = "uq_pricing_screen_type", columnNames = {"screen_id","seat_type"})
-)
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Table(name = "pricing")
 public class Pricing {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "pricing_id")
     private Long id;
 
-    @Column(name="show_time_id", nullable=false)
-    private Long showTimeId;
+    @NotBlank
+    @Column(nullable = false, unique = true, length = 100)
+    private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "seat_type", nullable = false, length = 20)
-    private SeatType seatType;
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    @Column(name = "price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @PrePersist
-    void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
-
-    public SeatType getSeatType() {
-        return seatType;
-    }
-
-    public void setSeatType(SeatType seatType) {
-        this.seatType = seatType;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Long getShowTimeId() {
-        return showTimeId;
-    }
-
-    public void setShowTimeId(Long showTimeId) {
-        this.showTimeId = showTimeId;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 }
