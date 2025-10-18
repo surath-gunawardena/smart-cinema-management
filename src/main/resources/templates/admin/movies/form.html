@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"><body>
+<h1 th:text="${movieResp} != null ? 'Edit Movie' : 'New Movie'"></h1>
+<form th:action="${movieResp} != null ? @{'/admin/movies/' + ${movieId}} : @{/admin/movies}" method="post" enctype="multipart/form-data">
+    <input type="text" name="title" th:value="${movieResp} != null ? ${movieResp.title} : ${movie.title}" placeholder="Title" required>
+    <textarea name="description" th:text="${movieResp} != null ? ${movieResp.description} : ${movie.description}" placeholder="Description"></textarea>
+    <input type="text" name="genre" th:value="${movieResp} != null ? ${movieResp.genre} : ${movie.genre}" placeholder="Genre">
+    <input type="text" name="language" th:value="${movieResp} != null ? ${movieResp.language} : ${movie.language}" placeholder="Language">
+    <input type="number" name="durationMinutes" th:value="${movieResp} != null ? ${movieResp.durationMinutes} : ${movie.durationMinutes}" placeholder="Duration (min)">
+    <input type="date" name="releaseDate" th:value="${movieResp} != null ? ${movieResp.releaseDate} : ${movie.releaseDate}">
+    <input type="text" name="rating" th:value="${movieResp} != null ? ${movieResp.rating} : ${movie.rating}" placeholder="Rating e.g. PG-13">
+    <label><input type="checkbox" name="active" th:checked="${movieResp} == null ? ${movie.active} : ${movieResp.active}"> Active</label>
+    <input type="file" name="poster" accept="image/*">
+    <button type="submit">Save</button>
+</form>
+</body></html>

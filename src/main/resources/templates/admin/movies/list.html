@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"><body>
+<h1>Movies</h1>
+<form th:action="@{/admin/movies}" method="get">
+    <input type="text" name="q" th:value="${q}" placeholder="Search title">
+    <button type="submit">Search</button>
+    <a th:href="@{/admin/movies/new}">Add Movie</a>
+    <a th:href="@{/admin/movies/tmdb}">Import from TMDB</a>
+</form>
+<div th:replace="~{admin/movies/_table :: table(${page})}"></div>
+</body></html>

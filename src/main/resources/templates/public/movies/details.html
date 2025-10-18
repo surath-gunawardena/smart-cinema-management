@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"><body>
+<h1 th:text="${movie.title}"></h1>
+<img th:if="${movie.posterUrl}" th:src="${movie.posterUrl}" style="height:220px"/>
+<p th:text="${movie.description}"></p>
+<ul>
+    <li><b>Genre:</b> <span th:text="${movie.genre}"></span></li>
+    <li><b>Language:</b> <span th:text="${movie.language}"></span></li>
+    <li><b>Duration:</b> <span th:text="${movie.durationMinutes} + ' min'"></span></li>
+    <li><b>Release:</b> <span th:text="${movie.releaseDate}"></span></li>
+    <li><b>Rating:</b> <span th:text="${movie.rating}"></span></li>
+</ul>
+</body></html>

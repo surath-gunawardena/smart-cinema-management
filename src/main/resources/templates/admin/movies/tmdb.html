@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"><body>
+<h2>Import from TMDB</h2>
+<input type="text" id="q" placeholder="Search TMDB">
+<button type="button" onclick="doSearch()">Search</button>
+<div id="results"></div>
+<script>
+    function doSearch(){
+        const q = document.getElementById('q').value;
+        fetch(`/api/admin/tmdb/search?q=${encodeURIComponent(q)}`)
+            .then(r=>r.json()).then(data=>{
+            const wrap = document.getElementById('results');
+            wrap.innerHTML = '';
+            (data.results||[]).forEach(item=>{
+                const div = document.createElement('div');
+                const year = (item.release_date||'').split('-')[0]||'';
+                div.innerHTML = `<b>${item.title}</b> ${year? '('+year+')':''} ` +
+                    `<button onclick=\"imp(${item.id})\">Import</button>`;
+                wrap.appendChild(div);
+            });
+        });
+    }
+    function imp(id){
+        fetch(`/api/admin/tmdb/${id}/import`, {method:'POST'})
+            .then(()=>window.location.href='/admin/movies');
+    }
+</script>
+</body></html>
