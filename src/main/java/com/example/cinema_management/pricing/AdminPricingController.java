@@ -40,9 +40,9 @@ public class AdminPricingController {
                        @RequestParam(required = false) SeatType seatType,
                        Model model) {
         var pageable = org.springframework.data.domain.PageRequest.of(page, size);
-        var pager = pricingService.pageAll(screenId, seatType, pageable);
+        // var pager = pricingService.pageAll(screenId, seatType, pageable);
         model.addAttribute("pageTitle", "Pricing");
-        model.addAttribute("pager", pager);
+//        model.addAttribute("pager", pager);
         model.addAttribute("screenId", screenId);
         model.addAttribute("seatType", seatType);
         model.addAttribute("page", page);
@@ -56,28 +56,22 @@ public class AdminPricingController {
         var map = new HashMap<String, Object>();
         var zero = java.math.BigDecimal.ZERO;
         var prices = new HashMap<String, BigDecimal>();
-        prices.put("ADULT", zero); prices.put("CHILD", zero);
-        prices.put("SENIOR", zero); prices.put("STUDENT", zero);
+        prices.put("ADULT", zero);
+        prices.put("CHILD", zero);
         pricingService.listForShowtime(showTimeId).forEach(p -> prices.put(p.getSeatType().name(), p.getPrice()));
         map.put("showTimeId", showTimeId);
         map.put("prices", prices);
         return map;
     }
 
-    // --- SAVE: create/update all seat types for a showtime
-    @PostMapping("/showtime/{showTimeId}/bulk")
-    public String saveShowtime(@PathVariable Long showTimeId,
-                               @Valid PricingShowtimeRequest req,
-                               BindingResult br,
-                               RedirectAttributes ra) {
-        if (br.hasErrors()) {
-            ra.addFlashAttribute("error", "Please fix validation errors.");
-            return "redirect:/admin/pricing";
-        }
-        req.setShowTimeId(showTimeId);
-        pricingService.upsertForShowtime(req);
+    @PostMapping("/showtime/{showTimeId}/save")
+    public String saveTwo(@PathVariable Long showTimeId,
+                          @RequestParam("adultPrice") BigDecimal adult,
+                          @RequestParam("childPrice") BigDecimal child,
+                          RedirectAttributes ra) {
+        pricingService.upsertTwoTypes(showTimeId, adult, child);
         ra.addFlashAttribute("success", "Pricing saved for showtime " + showTimeId);
-        return "redirect:/admin/pricing";
+        return "redirect:/admin/pricing/showtime/" + showTimeId;
     }
 
 }

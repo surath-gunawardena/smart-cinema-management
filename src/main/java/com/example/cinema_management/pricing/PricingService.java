@@ -14,50 +14,31 @@ import java.util.Optional;
 public class PricingService {
     private final PricingRepository repo;
 
-    public PricingService(PricingRepository repo) {
-        this.repo = repo;
-    }
+    public PricingService(PricingRepository repo) { this.repo = repo; }
 
     public List<Pricing> listForShowtime(Long showTimeId) {
         return repo.findByShowTimeId(showTimeId);
     }
 
+    public Page<Pricing> pageForShowtime(Long showTimeId, Pageable pageable) {
+        return repo.findByShowTimeId(showTimeId, pageable);
+    }
+
     @Transactional
-    public void upsertForShowtime(PricingShowtimeRequest r) {
-        upsert(r.getShowTimeId(), SeatType.ADULT,   r.getAdultPrice());
-        upsert(r.getShowTimeId(), SeatType.CHILD,   r.getChildPrice());
+    public void upsertTwoTypes(Long showTimeId, BigDecimal adult, BigDecimal child) {
+        upsert(showTimeId, SeatType.ADULT, adult);
+        upsert(showTimeId, SeatType.CHILD, child);
     }
 
-    private void upsert(Long stId, SeatType type, BigDecimal price) {
-        var row = repo.findByShowTimeIdAndSeatType(stId, type).orElseGet(() -> {
-            var p = new Pricing();
-            p.setShowTimeId(stId);
-            p.setSeatType(type);
-            return p;
-        });
-        row.setPrice(price);
-        repo.save(row);
-    }
-
-    public void deleteForShowtimeAndType(Long stId, SeatType type) {
-        repo.findByShowTimeIdAndSeatType(stId, type).ifPresent(repo::delete);
-    }
-
-    public Page<Pricing> pageAll(Integer screenId, SeatType seatType, Pageable pageable) {
-        // both filters -> at most one row; wrap it into a Page
-        if (screenId != null && seatType != null) {
-            Optional<Pricing> opt = repo.findByScreenIdAndSeatType(screenId, seatType);
-            if (opt.isPresent()) {
-                return new PageImpl<>(List.of(opt.get()), pageable, 1);
-            } else {
-                return Page.empty(pageable);
-            }
-        }
-
-        if (seatType != null) {
-            return repo.findBySeatType(seatType, pageable);
-        }
-
-        return repo.findAll(pageable);
+    private void upsert(Long showTimeId, SeatType type, BigDecimal price) {
+        var pricing = repo.findByShowTimeIdAndSeatType(showTimeId, type)
+                .orElseGet(() -> {
+                    var p = new Pricing();
+                    p.setShowTimeId(showTimeId);
+                    p.setSeatType(type);
+                    return p;
+                });
+        pricing.setPrice(price);
+        repo.save(pricing);
     }
 }
