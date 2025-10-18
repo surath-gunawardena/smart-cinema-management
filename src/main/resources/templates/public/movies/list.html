@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"><body>
+<h1>Now Showing</h1>
+<form th:action="@{/movies}" method="get">
+    <input type="text" name="q" th:value="${q}" placeholder="Search movies">
+    <button type="submit">Search</button>
+</form>
+<div th:each="m : ${page.content}">
+    <a th:href="@{'/movies/' + ${m.id}}">
+        <img th:if="${m.posterUrl}" th:src="${m.posterUrl}" style="height:160px"/>
+        <div th:text="${m.title}"></div>
+    </a>
+</div>
+</body></html>

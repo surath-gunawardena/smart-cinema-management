@@ -1,0 +1,18 @@
+spring:
+  thymeleaf:
+  cache: false
+
+
+app:
+  media:
+    posters-dir: uploads/posters
+    posters-url-base: /media/posters
+
+
+tmdb:
+  api-base-url: https://api.themoviedb.org/3
+  bearer-token: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZTkzYjM4ZDQ2YTZkODkyYmM0Zjk2ZjA5NzU2NGI3NCIsIm5iZiI6MTcwNTY2MzI3NC42NjQsInN1YiI6IjY1YWE1YjJhOGQ1MmM5MDEzNzgxZGU4NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.lGpq9PYbYfcbx0J-LZ5xmwaZaxzLrqmnlbIrjzBeEYk"
+  default-language: en-US
+  default-region: US
+  image-size: w500
+  download-posters: false
