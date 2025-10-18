@@ -18,8 +18,8 @@ public class Pricing {
     @Column(name = "pricing_id")
     private Long id;
 
-    @Column(name = "screen_id", nullable = false)
-    private Integer screenId; // keep simple; you can replace with @ManyToOne Screen if you have it
+    @Column(name="show_time_id", nullable=false)
+    private Long showTimeId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "seat_type", nullable = false, length = 20)
@@ -52,13 +52,7 @@ public class Pricing {
         this.id = id;
     }
 
-    public Integer getScreenId() {
-        return screenId;
-    }
 
-    public void setScreenId(Integer screenId) {
-        this.screenId = screenId;
-    }
 
     public SeatType getSeatType() {
         return seatType;
@@ -90,5 +84,13 @@ public class Pricing {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Long getShowTimeId() {
+        return showTimeId;
+    }
+
+    public void setShowTimeId(Long showTimeId) {
+        this.showTimeId = showTimeId;
     }
 }

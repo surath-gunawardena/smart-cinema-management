@@ -1,9 +1,12 @@
 package com.example.cinema_management.pricing;
 
 import com.example.cinema_management.pricing.dto.PricingBulkRequest;
+import com.example.cinema_management.pricing.dto.PricingShowtimeRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,8 +18,29 @@ public class PricingService {
         this.repo = repo;
     }
 
-    public List<Pricing> listForScreen(Integer screenId) {
-        return repo.findByScreenId(screenId, Pageable.unpaged()).getContent();
+    public List<Pricing> listForShowtime(Long showTimeId) {
+        return repo.findByShowTimeId(showTimeId);
+    }
+
+    @Transactional
+    public void upsertForShowtime(PricingShowtimeRequest r) {
+        upsert(r.getShowTimeId(), SeatType.ADULT,   r.getAdultPrice());
+        upsert(r.getShowTimeId(), SeatType.CHILD,   r.getChildPrice());
+    }
+
+    private void upsert(Long stId, SeatType type, BigDecimal price) {
+        var row = repo.findByShowTimeIdAndSeatType(stId, type).orElseGet(() -> {
+            var p = new Pricing();
+            p.setShowTimeId(stId);
+            p.setSeatType(type);
+            return p;
+        });
+        row.setPrice(price);
+        repo.save(row);
+    }
+
+    public void deleteForShowtimeAndType(Long stId, SeatType type) {
+        repo.findByShowTimeIdAndSeatType(stId, type).ifPresent(repo::delete);
     }
 
     public Page<Pricing> pageAll(Integer screenId, SeatType seatType, Pageable pageable) {
@@ -30,22 +54,10 @@ public class PricingService {
             }
         }
 
-        if (screenId != null) {
-            return repo.findByScreenId(screenId, pageable);
-        }
-
         if (seatType != null) {
             return repo.findBySeatType(seatType, pageable);
         }
 
         return repo.findAll(pageable);
-    }
-
-    public void upsertForScreen(PricingBulkRequest req) {
-        // your existing upsert code here
-    }
-
-    public void deleteForScreenAndType(Integer screenId, SeatType seatType) {
-        repo.findByScreenIdAndSeatType(screenId, seatType).ifPresent(repo::delete);
     }
 }
