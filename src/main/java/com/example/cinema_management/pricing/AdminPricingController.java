@@ -14,6 +14,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -21,23 +23,40 @@ import java.util.Map;
 public class AdminPricingController {
 
     private final PricingService service;
+    private final PricingRepository pricingRepository;
+    private final PricingTypeRepository pricingTypeRepository;
 
-    public AdminPricingController(PricingService service) {
+    public AdminPricingController(PricingService service, PricingRepository pricingRepository1, PricingTypeRepository pricingTypeRepository) {
         this.service = service;
+        this.pricingRepository = pricingRepository1;
+        this.pricingTypeRepository = pricingTypeRepository;
     }
 
-    // List page (pagination)
-    @GetMapping
-    public String list(@RequestParam(defaultValue = "0") int page,
-                       @RequestParam(defaultValue = "10") int size,
-                       Model model) {
-        Page<Pricing> pg = service.page(PageRequest.of(page, size));
-        model.addAttribute("pageTitle", "Pricing");
+    @GetMapping()
+    public String list(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model
+    ) {
+        Page<Pricing> pg = pricingRepository.findAll(PageRequest.of(page, size));
+
+        Map<Long, Map<SeatType, BigDecimal>> priceMap = new HashMap<>();
+
+        for (Pricing pricing : pg.getContent()) {
+            List<PricingType> types = pricingTypeRepository.findByPricingId(pricing.getId());
+            Map<SeatType, BigDecimal> m = new EnumMap<>(SeatType.class);
+            for (PricingType pt : types) {
+                m.put(pt.getType(), pt.getPrice());
+            }
+            priceMap.put(pricing.getId(), m);
+        }
+
         model.addAttribute("page", pg);
-        return "admin/pricing-list";
+        model.addAttribute("priceMap", priceMap);
+
+        return "admin/pricing/pricing-list";
     }
 
-    // Create form
     @GetMapping("/new")
     public String createForm(Model model) {
         var form = new PricingForm();
@@ -49,39 +68,47 @@ public class AdminPricingController {
         model.addAttribute("form", form);
         model.addAttribute("mode", "create");
 
-        return "admin/pricing-form";
+        return "admin/pricing/pricing-form";
     }
 
-    // Create submit
     @PostMapping
     public String createSubmit(@Valid @ModelAttribute("form") PricingForm form,
                                BindingResult binding,
                                RedirectAttributes ra,
                                Model model) {
         if (binding.hasErrors()) {
+            System.out.println(binding);
             model.addAttribute("pageTitle", "Create Pricing");
             model.addAttribute("mode", "create");
-            return "admin/pricing-form";
+            model.addAttribute("form", new PricingForm());
+
+            return "admin/pricing/pricing-form";
         }
+
         var req = new PricingCreateRequest();
         req.name = form.getName();
         req.prices = new EnumMap<>(SeatType.class);
         req.prices.put(SeatType.ADULT, form.getAdultPrice());
         req.prices.put(SeatType.CHILD, form.getChildPrice());
+        if ("active".equalsIgnoreCase(form.getStatus())) {
+            req.setStatus(Status.ACTIVE);
+        } else {
+            req.setStatus(Status.DEACTIVE);
+        }
 
         try {
             Long id = service.create(req);
             ra.addFlashAttribute("success", "Pricing created.");
             return "redirect:/admin/pricing/" + id + "/edit";
         } catch (IllegalArgumentException ex) {
+            System.out.println(ex.getMessage());
             binding.rejectValue("name", "name.exists", ex.getMessage());
             model.addAttribute("pageTitle", "Create Pricing");
             model.addAttribute("mode", "create");
-            return "admin/pricing-form";
+            return "admin/pricing/pricing-form";
         }
     }
 
-    // Edit form
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
         var p = service.getOrThrow(id);
@@ -98,10 +125,9 @@ public class AdminPricingController {
         model.addAttribute("pageTitle", "Edit Pricing");
         model.addAttribute("form", form);
         model.addAttribute("mode", "edit");
-        return "admin/pricing-form";
+        return "admin/pricing/pricing-form";
     }
 
-    // Edit submit
     @PostMapping("/{id}")
     public String editSubmit(@PathVariable Long id,
                              @Valid @ModelAttribute("form") PricingForm form,
@@ -111,7 +137,7 @@ public class AdminPricingController {
         if (binding.hasErrors()) {
             model.addAttribute("pageTitle", "Edit Pricing");
             model.addAttribute("mode", "edit");
-            return "admin/pricing-form";
+            return "admin/pricing/pricing-form";
         }
         var req = new PricingUpdateRequest();
         req.name = form.getName();
@@ -127,11 +153,10 @@ public class AdminPricingController {
             binding.rejectValue("name", "name.exists", ex.getMessage());
             model.addAttribute("pageTitle", "Edit Pricing");
             model.addAttribute("mode", "edit");
-            return "admin/pricing-form";
+            return "admin/pricing/pricing-form";
         }
     }
 
-    // Delete
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Long id, RedirectAttributes ra) {
         service.delete(id);

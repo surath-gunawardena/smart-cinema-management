@@ -5,10 +5,13 @@ import com.example.cinema_management.pricing.dto.PricingTypeUpdateRequest;
 import com.example.cinema_management.pricing.dto.PricingUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -37,15 +40,30 @@ public class PricingService {
             throw new IllegalArgumentException("Pricing name already exists");
         }
 
+        String username = currentUsername();
+        LocalDateTime now = LocalDateTime.now();
+
         Pricing p = new Pricing();
         p.setName(req.name.trim());
+        p.setStatus(Status.ACTIVE);
+        p.setCreatedAt(now);
+        p.setUpdatedAt(now);
+        p.setCreatedBy(username);
+        p.setUpdatedBy(username);
+
         Pricing saved = pricingRepo.save(p);
 
-        // Ensure only ADULT/CHILD exist; upsert two rows
-        upsertType(saved.getId(), SeatType.ADULT, req.prices.getOrDefault(SeatType.ADULT, BigDecimal.ZERO));
-        upsertType(saved.getId(), SeatType.CHILD, req.prices.getOrDefault(SeatType.CHILD, BigDecimal.ZERO));
+        upsertType(saved.getId(), SeatType.ADULT,
+                req.prices.getOrDefault(SeatType.ADULT, BigDecimal.ZERO));
+        upsertType(saved.getId(), SeatType.CHILD,
+                req.prices.getOrDefault(SeatType.CHILD, BigDecimal.ZERO));
 
         return saved.getId();
+    }
+
+    private String currentUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return (auth != null && auth.isAuthenticated()) ? auth.getName() : null;
     }
 
     @Transactional

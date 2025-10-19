@@ -1,6 +1,7 @@
 package com.example.cinema_management.pricing.dto;
 
 import com.example.cinema_management.pricing.SeatType;
+import com.example.cinema_management.pricing.Status;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +15,9 @@ public class PricingCreateRequest {
     @Valid
     @NotNull
     public Map<SeatType, @NotNull BigDecimal> prices;
+
+    @NotNull(message = "Status must be provided.")
+    private Status status = Status.ACTIVE;
 
     public String getName() {
         return name;
@@ -29,5 +33,13 @@ public class PricingCreateRequest {
 
     public void setPrices(Map<SeatType, BigDecimal> prices) {
         this.prices = prices;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

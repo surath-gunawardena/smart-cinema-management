@@ -16,7 +16,6 @@ public class LoginAudit {
     private String userAgent;
     private LocalDateTime loginAt;
 
-    // --- Manual Builder pattern ---
     public static Builder builder() {
         return new Builder();
     }

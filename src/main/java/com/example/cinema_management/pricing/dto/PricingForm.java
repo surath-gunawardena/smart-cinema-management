@@ -1,33 +1,65 @@
 package com.example.cinema_management.pricing.dto;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
 public class PricingForm {
     private Long id;
 
-    @jakarta.validation.constraints.NotBlank
+    @NotBlank
     private String name;
 
-    @jakarta.validation.constraints.NotNull
-    @jakarta.validation.constraints.DecimalMin("0.00")
-    @jakarta.validation.constraints.Digits(integer = 8, fraction = 2)
+    @NotNull(message = "Status must not be null")
+    private String status = "DEACTIVE";
+
+    @NotNull
+    @DecimalMin("0.00")
+    @Digits(integer = 8, fraction = 2)
     private BigDecimal adultPrice;
 
-    @jakarta.validation.constraints.NotNull
-    @jakarta.validation.constraints.DecimalMin("0.00")
-    @jakarta.validation.constraints.Digits(integer = 8, fraction = 2)
+    @NotNull
+    @DecimalMin("0.00")
+    @Digits(integer = 8, fraction = 2)
     private BigDecimal childPrice;
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public BigDecimal getAdultPrice() { return adultPrice; }
-    public void setAdultPrice(BigDecimal adultPrice) { this.adultPrice = adultPrice; }
+    public String getName() {
+        return name;
+    }
 
-    public BigDecimal getChildPrice() { return childPrice; }
-    public void setChildPrice(BigDecimal childPrice) { this.childPrice = childPrice; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void String(String status) {
+        System.out.println(status);
+        this.status = status;
+    }
+
+    public BigDecimal getAdultPrice() {
+        return adultPrice;
+    }
+
+    public void setAdultPrice(BigDecimal adultPrice) {
+        this.adultPrice = adultPrice;
+    }
+
+    public BigDecimal getChildPrice() {
+        return childPrice;
+    }
+
+    public void setChildPrice(BigDecimal childPrice) {
+        this.childPrice = childPrice;
+    }
 }
