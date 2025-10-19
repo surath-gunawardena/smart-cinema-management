@@ -1,7 +1,9 @@
 package com.example.cinema_management.pricing.dto;
 
 import com.example.cinema_management.pricing.SeatType;
+import com.example.cinema_management.pricing.Status;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -11,7 +13,9 @@ public class PricingUpdateRequest {
     @NotBlank
     public String name;
 
-    @Valid
+    @NotNull
+    private Status status;
+
     @NotNull
     public Map<SeatType, @NotNull BigDecimal> prices;
 
@@ -21,6 +25,14 @@ public class PricingUpdateRequest {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public Map<SeatType, BigDecimal> getPrices() {

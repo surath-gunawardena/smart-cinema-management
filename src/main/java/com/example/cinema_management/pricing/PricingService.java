@@ -3,6 +3,7 @@ package com.example.cinema_management.pricing;
 import com.example.cinema_management.pricing.dto.PricingCreateRequest;
 import com.example.cinema_management.pricing.dto.PricingTypeUpdateRequest;
 import com.example.cinema_management.pricing.dto.PricingUpdateRequest;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PricingService {
@@ -68,17 +71,16 @@ public class PricingService {
 
     @Transactional
     public void update(Long id, PricingUpdateRequest req) {
-        Pricing p = getOrThrow(id);
-        // keep unique
-        pricingRepo.findByNameIgnoreCase(req.name)
-                .filter(other -> !other.getId().equals(id))
-                .ifPresent(other -> { throw new IllegalArgumentException("Pricing name already exists"); });
+        Pricing pricing = pricingRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pricing not found: " + id));
 
-        p.setName(req.name.trim());
-        pricingRepo.save(p);
+        pricing.setName(req.getName());
+        pricing.setStatus(req.getStatus());
+        pricingRepo.save(pricing);
 
         upsertType(id, SeatType.ADULT, req.prices.getOrDefault(SeatType.ADULT, BigDecimal.ZERO));
         upsertType(id, SeatType.CHILD, req.prices.getOrDefault(SeatType.CHILD, BigDecimal.ZERO));
+
     }
 
     @Transactional

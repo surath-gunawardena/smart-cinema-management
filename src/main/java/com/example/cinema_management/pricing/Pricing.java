@@ -2,6 +2,9 @@ package com.example.cinema_management.pricing;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,10 +29,12 @@ public class Pricing {
     @Column(name = "created_by", length = 100, updatable = false)
     private String createdBy;
 
+    @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @Column(name = "updated_by", length = 100)
+    @LastModifiedBy
     private String updatedBy;
 
     /* lifecycle hooks to set timestamps */
