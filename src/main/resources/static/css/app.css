@@ -1,0 +1,18 @@
+@keyframes fadeOut {
+  0%, 50% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; height: 0; margin: 0; padding: 0; }
+}
+
+.alert {
+  animation: fadeOut 10s ease forwards;
+  transition: opacity 0.3s ease;
+}
+
+.alert button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: auto;
+}

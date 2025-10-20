@@ -35,7 +35,7 @@ public class AdminPricingController {
     @GetMapping()
     public String list(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "5") int size,
             Model model
     ) {
         Page<Pricing> pg = pricingRepository.findAll(PageRequest.of(page, size));
@@ -90,18 +90,16 @@ public class AdminPricingController {
         req.prices = new EnumMap<>(SeatType.class);
         req.prices.put(SeatType.ADULT, form.getAdultPrice());
         req.prices.put(SeatType.CHILD, form.getChildPrice());
-        if ("active".equalsIgnoreCase(form.getStatus())) {
+        if ("ACTIVE".equalsIgnoreCase(form.getStatus())) {
             req.setStatus(Status.ACTIVE);
         } else {
             req.setStatus(Status.DEACTIVE);
         }
-
         try {
             Long id = service.create(req);
             ra.addFlashAttribute("success", "Pricing created.");
-            return "redirect:/admin/pricing/" + id + "/edit";
+            return "redirect:/admin/pricing";
         } catch (IllegalArgumentException ex) {
-            System.out.println(ex.getMessage());
             binding.rejectValue("name", "name.exists", ex.getMessage());
             model.addAttribute("pageTitle", "Create Pricing");
             model.addAttribute("mode", "create");
@@ -119,6 +117,7 @@ public class AdminPricingController {
         var form = new PricingForm();
         form.setId(p.getId());
         form.setName(p.getName());
+        form.setStatus(p.getStatus().name());
         form.setAdultPrice(map.getOrDefault(SeatType.ADULT, new BigDecimal("0.00")));
         form.setChildPrice(map.getOrDefault(SeatType.CHILD, new BigDecimal("0.00")));
 
@@ -144,7 +143,11 @@ public class AdminPricingController {
         req.prices = new EnumMap<>(SeatType.class);
         req.prices.put(SeatType.ADULT, form.getAdultPrice());
         req.prices.put(SeatType.CHILD, form.getChildPrice());
-
+        if ("ACTIVE".equalsIgnoreCase(form.getStatus())) {
+            req.setStatus(Status.ACTIVE);
+        } else {
+            req.setStatus(Status.DEACTIVE);
+        }
         try {
             service.update(id, req);
             ra.addFlashAttribute("success", "Pricing updated.");
