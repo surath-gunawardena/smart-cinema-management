@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en" class="dark">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
     <meta charset="UTF-8" />
@@ -11,72 +11,73 @@
     </script>
 </head>
 
-<body class="">
+<body class="bg-gray-100 text-gray-900">
     <div th:replace="admin/layout :: shell(~{::section})">
         <section>
             <div class="flex items-center justify-between mb-6">
                 <h1 class="text-xl font-semibold" th:text="${mode == 'create' ? 'Create Pricing' : 'Edit Pricing'}">
                     Pricing</h1>
                 <a href="/admin/pricing"
-                    class="px-3 py-2 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-800">Back</a>
+                    class="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 transition">
+                    Back
+                </a>
             </div>
 
             <form th:object="${form}"
                 th:action="${mode} == 'create' ? @{/admin/pricing} : @{/admin/pricing/{id}(id=${form.id})}"
-                method="post" class="space-y-6 bg-slate-900/40 p-6 rounded-xl border border-slate-800 shadow">
+                method="post" class="space-y-6 bg-white p-6 rounded-xl border border-gray-200 shadow-md">
 
                 <input type="hidden" name="_method" th:value="${mode} == 'create' ? 'POST' : 'PUT'" />
 
                 <div th:if="${#fields.hasGlobalErrors()}"
-                    class="bg-rose-900/30 text-rose-300 p-3 rounded-md border border-rose-700 mb-4">
+                    class="bg-red-100 text-red-700 p-3 rounded-md border border-red-300 mb-4">
                     <ul>
                         <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
                     </ul>
                 </div>
 
                 <div>
-                    <label class="block text-sm mb-1 text-slate-300">Pricing Name</label>
+                    <label class="block text-sm mb-1 text-gray-700">Pricing Name</label>
                     <input th:field="*{name}"
-                        class="w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-slate-100" />
-                    <p class="text-rose-400 text-sm" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                        class="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-900 focus:ring-blue-500 focus:border-blue-500" />
+                    <p class="text-red-500 text-sm" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm mb-1 text-slate-300">Adult Price</label>
+                        <label class="block text-sm mb-1 text-gray-700">Adult Price</label>
                         <input th:field="*{adultPrice}" type="number" step="0.01"
-                            class="w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-slate-100" />
-                        <p class="text-rose-400 text-sm" th:if="${#fields.hasErrors('adultPrice')}"
+                            class="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-900 focus:ring-blue-500 focus:border-blue-500" />
+                        <p class="text-red-500 text-sm" th:if="${#fields.hasErrors('adultPrice')}"
                             th:errors="*{adultPrice}"></p>
                     </div>
 
                     <div>
-                        <label class="block text-sm mb-1 text-slate-300">Child Price</label>
+                        <label class="block text-sm mb-1 text-gray-700">Child Price</label>
                         <input th:field="*{childPrice}" type="number" step="0.01"
-                            class="w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-slate-100" />
-                        <p class="text-rose-400 text-sm" th:if="${#fields.hasErrors('childPrice')}"
+                            class="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-900 focus:ring-blue-500 focus:border-blue-500" />
+                        <p class="text-red-500 text-sm" th:if="${#fields.hasErrors('childPrice')}"
                             th:errors="*{childPrice}"></p>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm mb-2 text-slate-300">Status</label>
+                    <label class="block text-sm mb-2 text-gray-700">Status</label>
                     <div class="flex items-center space-x-3">
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" name="status" value="ACTIVE" th:checked="${form.status == 'ACTIVE'}"
                                 class="sr-only peer" />
-                            <div class="w-11 h-6 bg-slate-700 peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer
+                            <div class="w-11 h-6 bg-gray-300 peer-focus:ring-2 peer-focus:ring-blue-400 rounded-full peer
                                         peer-checked:after:translate-x-full peer-checked:after:border-white after:content-['']
                                         after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300
                                         after:border after:rounded-full after:h-5 after:w-5 after:transition-all
-                                        peer-checked:bg-blue-600">
+                                        peer-checked:bg-blue-500">
                             </div>
-                            <span class="ml-3 text-sm text-slate-200"
+                            <span class="ml-3 text-sm text-gray-800"
                                 th:text="${form.status == 'ACTIVE' ? 'Active' : 'Deactive'}">Active</span>
                         </label>
                     </div>
                 </div>
-
 
                 <div class="flex gap-3">
                     <button type="submit"
@@ -84,7 +85,7 @@
                         <span th:text="${mode} == 'create' ? 'Create' : 'Update'">Create</span>
                     </button>
                     <a href="/admin/pricing"
-                        class="px-4 py-2 rounded-md border border-slate-700 text-slate-200 hover:bg-slate-800">
+                        class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-100">
                         Cancel
                     </a>
                 </div>
@@ -93,5 +94,4 @@
         </section>
     </div>
 </body>
-
 </html>

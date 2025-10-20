@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en" class="dark">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
   <meta charset="UTF-8" />
@@ -81,12 +81,12 @@
 
         <div class="mt-4 flex items-center gap-2">
           <a th:if="${!page.first}" th:href="@{/admin/pricing(page=${page.number - 1}, size=${page.size})}"
-            class="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-800">Prev</a>
+            class="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800">Prev</a>
           <span class="text-slate-400">Page <span th:text="${page.number + 1}">1</span> /
             <span th:text="${page.totalPages}">1</span>
           </span>
           <a th:if="${!page.last}" th:href="@{/admin/pricing(page=${page.number + 1}, size=${page.size})}"
-            class="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-800">Next</a>
+            class="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-400 hover:bg-slate-800">Next</a>
         </div>
       </div>
     </section>
