@@ -1,129 +1,120 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Pricing</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = { darkMode: "class" };
-    </script>
-  </head>
 
-  <body>
-    <div th:replace="admin/layout :: shell(~{::section})">
-      <section>
-        <div class="mb-6">
-          <h2 class="text-2xl font-semibold">Pricing Management</h2>
-          <p class="text-slate-500 mb-4">
-            Manage ticket pricing rates and types
-          </p>
-          <div class="flex items-center justify-end mb-4">
-            <a
-              href="/admin/pricing/new"
-              class="px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500"
-            >
-              + Add Pricing Rate
-            </a>
-          </div>
-          <div class="space-y-3">
-            <div
-              th:each="p : ${page.content}"
-              class="bg-white border border-slate-200 rounded-2xl p-5 mb-4"
-            >
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-3">
-                  <h3 class="text-lg font-semibold" th:text="${p.name}">
-                    Standard Rate
-                  </h3>
+<head>
+  <meta charset="UTF-8" />
+  <title>Pricing</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+  <script>
+    tailwind.config = { darkMode: "class" };
+  </script>
+</head>
 
-                  <span
-                    class="px-2 py-0.5 text-xs rounded-full text-white"
-                    th:classappend="${p.status.name() == 'ACTIVE'} ? ' bg-emerald-600' : ' bg-slate-600'"
-                    th:text="${p.status.name() == 'ACTIVE'} ? 'Active' : 'Deactive'"
-                  >
-                    Active
-                  </span>
+<body>
+  <div th:replace="admin/layout :: shell(~{::section})">
+    <section>
+      <div class="mb-6">
+        <h2 class="text-2xl font-semibold">Pricing Management</h2>
+        <p class="text-slate-500 mb-4">
+          Manage ticket pricing rates and types
+        </p>
+        <div class="flex items-center justify-end mb-4">
+          <a href="/admin/pricing/new" class="px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500">
+            + Add Pricing Rate
+          </a>
+        </div>
+        <div class="space-y-3">
+          <div th:each="p : ${page.content}" class="bg-white border border-slate-200 rounded-2xl p-5 mb-4">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <h3 class="text-lg font-semibold" th:text="${p.name}">
+                  Standard Rate
+                </h3>
 
-                  <span class="text-xs text-slate-500">
-                    Created:
-                    <span
-                      th:text="${#temporals.format(p.createdAt, 'yyyy-MM-dd HH:mm')}"
-                      >2025-09-11 10:15</span
-                    >
-                  </span>
-                </div>
+                <span class="px-2 py-0.5 text-xs rounded-full text-white"
+                  th:classappend="${p.status.name() == 'ACTIVE'} ? ' bg-emerald-600' : ' bg-slate-600'"
+                  th:text="${p.status.name() == 'ACTIVE'} ? 'Active' : 'Deactive'">
+                  Active
+                </span>
 
-                <div class="flex items-center gap-2">
-                  <a
-                    th:href="@{'/admin/pricing/' + ${p.id} + '/edit'}"
-                    class="px-3 py-1.5 text-sm rounded-lg border border-slate-200 hover:bg-slate-50"
-                    >Edit</a
-                  >
-                  <form
-                    th:action="@{'/admin/pricing/' + ${p.id} + '/delete'}"
-                    method="post"
-                    class="inline"
-                    onsubmit="return confirm('Delete this pricing?');"
-                  >
-                    <button
-                      type="submit"
-                      class="px-3 py-1.5 text-sm rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50"
-                    >
-                      Delete
-                    </button>
-                  </form>
-                </div>
+                <span class="text-xs text-slate-500">
+                  Created:
+                  <span th:text="${#temporals.format(p.createdAt, 'yyyy-MM-dd HH:mm')}">2025-09-11 10:15</span>
+                </span>
               </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                <div
-                  class="rounded-xl border border-slate-200 p-4"
-                  th:each="seatType : ${T(com.example.cinema_management.pricing.SeatType).values()}"
-                >
-                  <div class="text-slate-500 text-sm" th:text="${seatType}">
-                    ADULT
-                  </div>
-                  <div
-                    class="text-xl font-semibold text-blue-600"
-                    th:with="pm=${priceMap.get(p.id)}, amt=${pm != null ? pm.get(seatType) : null}"
-                    th:text="${amt != null
+              <div class="flex items-center gap-2">
+                <a th:href="@{'/admin/pricing/' + ${p.id} + '/edit'}"
+                  class="px-3 py-1.5 text-sm rounded-lg border border-slate-200 hover:bg-slate-50">Edit</a>
+                <form th:action="@{'/admin/pricing/' + ${p.id} + '/delete'}" method="post" class="inline delete-form">
+                  <button type="button"
+                    class="delete-btn px-3 py-1.5 text-sm rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50">
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <div class="rounded-xl border border-slate-200 p-4"
+                th:each="seatType : ${T(com.example.cinema_management.pricing.SeatType).values()}">
+                <div class="text-slate-500 text-sm" th:text="${seatType}">
+                  ADULT
+                </div>
+                <div class="text-xl font-semibold text-blue-600"
+                  th:with="pm=${priceMap.get(p.id)}, amt=${pm != null ? pm.get(seatType) : null}" th:text="${amt != null
               ? #numbers.formatDecimal(amt, 0, 'COMMA', 2, 'POINT')
-              : '-'}"
-                  >
-                    0.00
-                  </div>
+              : '-'}">
+                  0.00
                 </div>
               </div>
             </div>
-
-            <div
-              th:if="${page.content.isEmpty()}"
-              class="bg-white border border-slate-200 rounded-2xl p-5 mb-4 text-slate-500 text-sm"
-            >
-              No pricing yet.
-            </div>
           </div>
 
-          <div class="mt-4 flex items-center gap-2">
-            <a
-              th:if="${!page.first}"
-              th:href="@{/admin/pricing(page=${page.number - 1}, size=${page.size})}"
-              class="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-800"
-              >Prev</a
-            >
-            <span class="text-slate-400"
-              >Page <span th:text="${page.number + 1}">1</span> /
-              <span th:text="${page.totalPages}">1</span>
-            </span>
-            <a
-              th:if="${!page.last}"
-              th:href="@{/admin/pricing(page=${page.number + 1}, size=${page.size})}"
-              class="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-800"
-              >Next</a
-            >
+          <div th:if="${page.content.isEmpty()}"
+            class="bg-white border border-slate-200 rounded-2xl p-5 mb-4 text-slate-500 text-sm">
+            No pricing yet.
           </div>
         </div>
-      </section>
-    </div>
-  </body>
+
+        <div class="mt-4 flex items-center gap-2">
+          <a th:if="${!page.first}" th:href="@{/admin/pricing(page=${page.number - 1}, size=${page.size})}"
+            class="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-800">Prev</a>
+          <span class="text-slate-400">Page <span th:text="${page.number + 1}">1</span> /
+            <span th:text="${page.totalPages}">1</span>
+          </span>
+          <a th:if="${!page.last}" th:href="@{/admin/pricing(page=${page.number + 1}, size=${page.size})}"
+            class="px-3 py-1.5 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-800">Next</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".delete-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const form = this.closest("form");
+          Swal.fire({
+            title: "Are you sure?",
+            text: "This action cannot be undone!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "Cancel",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              form.submit();
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body>
+
 </html>

@@ -35,7 +35,7 @@ public class AdminPricingController {
     @GetMapping()
     public String list(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "5") int size,
             Model model
     ) {
         Page<Pricing> pg = pricingRepository.findAll(PageRequest.of(page, size));
@@ -98,7 +98,7 @@ public class AdminPricingController {
         try {
             Long id = service.create(req);
             ra.addFlashAttribute("success", "Pricing created.");
-            return "redirect:/admin/pricing/" + id + "/edit";
+            return "redirect:/admin/pricing";
         } catch (IllegalArgumentException ex) {
             binding.rejectValue("name", "name.exists", ex.getMessage());
             model.addAttribute("pageTitle", "Create Pricing");
