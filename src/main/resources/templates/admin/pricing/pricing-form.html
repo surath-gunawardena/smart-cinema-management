@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="${mode == 'create' ? 'Create Pricing' : 'Edit Pricing'}">Pricing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</head>
+
+<body class="bg-slate-900 text-slate-100">
+    <div th:replace="admin/layout :: shell(~{::section})">
+        <section>
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-xl font-semibold" th:text="${mode == 'create' ? 'Create Pricing' : 'Edit Pricing'}">
+                    Pricing</h1>
+                <a href="/admin/pricing"
+                    class="px-3 py-2 rounded-lg border border-slate-700 text-slate-200 hover:bg-slate-800">Back</a>
+            </div>
+
+            <form th:object="${form}"
+                th:action="${mode} == 'create' ? @{/admin/pricing} : @{/admin/pricing/{id}(id=${form.id})}"
+                method="post" class="space-y-6 bg-slate-900/40 p-6 rounded-xl border border-slate-800 shadow">
+
+                <input type="hidden" name="_method" th:value="${mode} == 'create' ? 'POST' : 'PUT'" />
+
+                <div th:if="${#fields.hasGlobalErrors()}"
+                    class="bg-rose-900/30 text-rose-300 p-3 rounded-md border border-rose-700 mb-4">
+                    <ul>
+                        <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <label class="block text-sm mb-1 text-slate-300">Pricing Name</label>
+                    <input th:field="*{name}"
+                        class="w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-slate-100" />
+                    <p class="text-rose-400 text-sm" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm mb-1 text-slate-300">Adult Price</label>
+                        <input th:field="*{adultPrice}" type="number" step="0.01"
+                            class="w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-slate-100" />
+                        <p class="text-rose-400 text-sm" th:if="${#fields.hasErrors('adultPrice')}"
+                            th:errors="*{adultPrice}"></p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm mb-1 text-slate-300">Child Price</label>
+                        <input th:field="*{childPrice}" type="number" step="0.01"
+                            class="w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-slate-100" />
+                        <p class="text-rose-400 text-sm" th:if="${#fields.hasErrors('childPrice')}"
+                            th:errors="*{childPrice}"></p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm mb-2 text-slate-300">Status</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="hidden" name="status" value="DEACTIVE" />
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="status" value="ACTIVE" th:checked="${form.status == 'ACTIVE'}"
+                                class="sr-only peer" />
+                            <div class="w-11 h-6 bg-slate-700 peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer
+                                        peer-checked:after:translate-x-full peer-checked:after:border-white after:content-['']
+                                        after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300
+                                        after:border after:rounded-full after:h-5 after:w-5 after:transition-all
+                                        peer-checked:bg-blue-600">
+                            </div>
+                            <span class="ml-3 text-sm text-slate-200"
+                                th:text="${form.status == 'ACTIVE' ? 'Active' : 'Deactive'}">Active</span>
+                        </label>
+                    </div>
+                </div>
+
+
+                <div class="flex gap-3">
+                    <button type="submit"
+                        class="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-500 transition">
+                        <span th:text="${mode} == 'create' ? 'Create' : 'Update'">Create</span>
+                    </button>
+                    <a href="/admin/pricing"
+                        class="px-4 py-2 rounded-md border border-slate-700 text-slate-200 hover:bg-slate-800">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+        </section>
+    </div>
+</body>
+
+</html>
