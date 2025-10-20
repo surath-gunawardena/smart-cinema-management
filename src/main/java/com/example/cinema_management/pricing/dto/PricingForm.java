@@ -42,8 +42,8 @@ public class PricingForm {
         return status;
     }
 
-    public void String(String status) {
-        System.out.println(status);
+    public void setStatus(String status) {
+
         this.status = status;
     }
 

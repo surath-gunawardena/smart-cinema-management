@@ -48,7 +48,7 @@ public class PricingService {
 
         Pricing p = new Pricing();
         p.setName(req.name.trim());
-        p.setStatus(Status.ACTIVE);
+        p.setStatus(req.getStatus());
         p.setCreatedAt(now);
         p.setUpdatedAt(now);
         p.setCreatedBy(username);
