@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
     <script>
         tailwind.config = { darkMode: 'class' }
     </script>
@@ -16,19 +17,19 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
                 <div class="text-sm text-slate-400">Active Movies</div>
-                <div class="text-3xl font-semibold" th:text="${activeMovies}">4</div>
+                <div class="text-3xl font-semibold text-slate-400" th:text="${activeMovies}">4</div>
             </div>
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
                 <div class="text-sm text-slate-400">Total Users</div>
-                <div class="text-3xl font-semibold" th:text="${totalUsers}">1</div>
+                <div class="text-3xl font-semibold text-slate-400" th:text="${totalUsers}">1</div>
             </div>
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
                 <div class="text-sm text-slate-400">Schedules</div>
-                <div class="text-3xl font-semibold" th:text="${schedules}">3</div>
+                <div class="text-3xl font-semibold text-slate-400" th:text="${schedules}">3</div>
             </div>
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
-                <div class="text-sm text-slate-400">Total Revenue</div>
-                <div class="text-3xl font-semibold">$<span th:text="${#numbers.formatDecimal(totalRevenue,1,'COMMA',2,'POINT')}">139.92</span></div>
+                <div class="text-sm text-slate-400 ">Total Revenue</div>
+                <div class="text-3xl font-semibold text-slate-400">$<span th:text="${#numbers.formatDecimal(totalRevenue,1,'COMMA',2,'POINT')}">139.92</span></div>
             </div>
         </div>
     </section>
