@@ -1,15 +1,14 @@
 package com.example.cinema_management.movie.repository;
 
-
 import com.example.cinema_management.movie.entity.Movie;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 
-@Repository
 public interface MovieRepository extends JpaRepository<Movie, Long> {
-    Page<Movie> findByTitleContainingIgnoreCaseAndActiveTrue(String q, Pageable pageable);
-    boolean existsByTitleIgnoreCase(String title);
+    Optional<Movie> findFirstByTitleIgnoreCase(String title);
+    Page<Movie> findByTitleContainingIgnoreCaseAndActiveTrue(String title, Pageable pageable);
+    Page<Movie> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 }
-
