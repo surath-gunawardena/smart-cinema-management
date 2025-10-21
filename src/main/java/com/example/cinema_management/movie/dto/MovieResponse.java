@@ -12,6 +12,6 @@ public record MovieResponse(
         Double rating,
         LocalDate releaseDate,
         String posterPath,
-        String posterUrl,     // ✅ add this
+        String posterUrl,
         boolean active
 ) {}
