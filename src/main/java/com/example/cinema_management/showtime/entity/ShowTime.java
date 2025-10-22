@@ -1,4 +1,4 @@
-package com.example.cinema_management.screen.entity;
+package com.example.cinema_management.showtime.entity;
 
 import jakarta.persistence.*;
 

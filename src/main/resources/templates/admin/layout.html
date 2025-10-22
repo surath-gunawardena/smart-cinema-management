@@ -58,6 +58,15 @@
             </a>
 
             <a
+              href="/admin/screens"
+              class="px-3 py-2 rounded-md font-medium transition"
+              th:classappend="${#strings.contains(path, '/admin/screens')} ?
+             'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'"
+            >
+              Screens
+            </a>
+
+            <a
               href="/admin/showtimes"
               class="px-3 py-2 rounded-md font-medium transition"
               th:classappend="${#strings.contains(path, '/admin/showtimes')} ?

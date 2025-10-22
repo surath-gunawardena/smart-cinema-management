@@ -1,6 +1,6 @@
-package com.example.cinema_management.screen.repository;
+package com.example.cinema_management.showtime.repository;
 
-import com.example.cinema_management.screen.entity.ShowTime;
+import com.example.cinema_management.showtime.entity.ShowTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
