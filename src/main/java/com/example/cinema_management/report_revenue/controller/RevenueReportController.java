@@ -1,9 +1,9 @@
 package com.example.cinema_management.report_revenue.controller;
 
 import com.example.cinema_management.movie.repository.MovieRepository;
-import com.example.cinema_management.screen.repository.ShowTimeRepository;
 import com.example.cinema_management.report_revenue.service.RevenueReportService;
 import com.example.cinema_management.report_revenue.dto.RevenueReportParams;
+import com.example.cinema_management.showtime.repository.ShowTimeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
